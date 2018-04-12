@@ -17,7 +17,7 @@ public class ThreadMarker {
         System.out.println(Thread.currentThread());
 
         try {
-            Thread.sleep(1200000); //120초
+            Thread.sleep(12000000); //1200초
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
