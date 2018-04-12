@@ -32,16 +32,16 @@ public class Application {
             System.out.println("i: "+i);
             threadMarker.create();
         }
-        return "go!";
+        return "go1100!";
     }
 
-    @GetMapping("/3000")
+    @GetMapping("/4000")
     public String go4000() {
         for (int i = 0; i < 4000; i++) {
             System.out.println("i: "+i);
             threadMarker.create();
         }
-        return "go!";
+        return "go4000!";
     }
 
 
