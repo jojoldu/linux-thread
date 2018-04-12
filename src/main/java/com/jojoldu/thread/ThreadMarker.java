@@ -13,9 +13,14 @@ import org.springframework.stereotype.Component;
 public class ThreadMarker {
 
     @Async
-    public void create() throws InterruptedException {
+    public void create() {
         System.out.println(Thread.currentThread());
-        Thread.sleep(1200000);
+
+        try {
+            Thread.sleep(1200000); //120초
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
