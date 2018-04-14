@@ -2,9 +2,13 @@ package com.jojoldu.thread;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 @EnableAsync
 @RestController
@@ -19,6 +23,31 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplateBuilder()
+                .setConnectTimeout(20 * 60 * 1000) // 20분
+                .setReadTimeout(20 * 60 * 1000) // 20분
+                .build();
+    }
+
+    @GetMapping("/connect-hang")
+    public String connectHang() {
+        for (int i = 0; i < 1100; i++) {
+             threadMarker.connectHang(i);
+        }
+
+        return "connectHang";
+    }
+
+    @GetMapping("/receive-hang")
+    public String receiveHang(@RequestParam(value="index") String index) throws InterruptedException {
+        System.out.println("index: "+index);
+        Thread.sleep(12000000); // 1200초 == 20분
+
+        return "receiveHang";
     }
 
     @GetMapping("/")
@@ -43,6 +72,4 @@ public class Application {
         }
         return "go4000!";
     }
-
-
 }
