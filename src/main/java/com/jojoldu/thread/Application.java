@@ -25,14 +25,6 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplateBuilder()
-                .setConnectTimeout(20 * 60 * 1000) // 20분
-                .setReadTimeout(20 * 60 * 1000) // 20분
-                .build();
-    }
-
     @GetMapping("/connect-hang")
     public String connectHang() {
         for (int i = 0; i < 1100; i++) {
