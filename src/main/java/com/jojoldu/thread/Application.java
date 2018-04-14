@@ -26,17 +26,19 @@ public class Application {
     }
 
     @GetMapping("/connect-hang")
-    public String connectHang() {
-        for (int i = 0; i < 1100; i++) {
-             threadMarker.connectHang(i);
-        }
+    public String connectHang(@RequestParam(value = "index") String index) {
+        RestTemplate restTemplate = new RestTemplateBuilder()
+                .setConnectTimeout(20 * 60 * 1000) // 20분
+                .setReadTimeout(20 * 60 * 1000) // 20분
+                .build();
 
-        return "connectHang";
+        System.out.println("index: " +index);
+
+        return restTemplate.getForObject("http://ec2-13-125-187-252.ap-northeast-2.compute.amazonaws.com:8080/receive-hang", String.class);
     }
 
     @GetMapping("/receive-hang")
-    public String receiveHang(@RequestParam(value="index") String index) throws InterruptedException {
-        System.out.println("index: "+index);
+    public String receiveHang() throws InterruptedException {
         Thread.sleep(12000000); // 1200초 == 20분
 
         return "receiveHang";
