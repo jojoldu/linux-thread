@@ -54,6 +54,8 @@ root 사용자 제외한 오픈 파일 개수
 lsof | awk '$3 !~ /root/ {print $0}' | wc -l
 ```
 
+open file은 해당 서버의 전체 오픈 파일 개수가 아닐 수 있겠는데?  
+
 ## 설정법
 
 리눅스 서버에서 ```/etc/security/limits.conf``` 파일을 열어 수정합니다.
