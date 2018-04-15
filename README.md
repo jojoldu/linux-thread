@@ -34,12 +34,11 @@ NIO를 사용하면 각 스레드는 원하는 수만큼의 연결을 처리 할
 
 ![server-memory](./images/server-memory.png)
 
-단순 쓰레드 생성과 달리, 
-EC2의 서버 메모리가 먼저 부족해져서 EC2 사양을 높여서 다시 실험해보겠습니다.  
+단순 쓰레드 생성과 달리, **EC2의 서버 메모리가 먼저 부족**해져서 EC2 사양을 높여서 다시 실험해보겠습니다.  
 
 ![ec2-list](./images/ec2-list.png)
 
-t2.micro는 메모리가 1GB인지라, t2.large로 변경합니다.  
+(t2.micro는 메모리가 1GB인지라, t2.large (8GB) 로 변경합니다.)  
   
 
 전체 오픈 파일 개수
@@ -55,6 +54,12 @@ lsof | awk '$3 !~ /root/ {print $0}' | wc -l
 ```
 
 open file은 해당 서버의 전체 오픈 파일 개수가 아닐 수 있겠는데?  
+
+![open-file1](./images/open-file1.png)
+
+![open-file2](./images/open-file2.png)
+
+
 
 ## 설정법
 

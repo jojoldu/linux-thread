@@ -30,8 +30,8 @@ public class Application {
     @GetMapping("/connect-hang")
     public String connectHang(@RequestParam(value = "index") String index) {
         RestTemplate restTemplate = new RestTemplateBuilder()
-                .setConnectTimeout(20 * 60 * 1000) // 20분
-                .setReadTimeout(20 * 60 * 1000) // 20분
+                .setConnectTimeout(30 * 60 * 1000) // 20분
+                .setReadTimeout(30 * 60 * 1000) // 20분
                 .build();
 
         System.out.println("index: " +index);
