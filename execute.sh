@@ -9,5 +9,4 @@ nohup java -jar /home/ec2-user/linux-thread/build/libs/linux-thread-0.0.1-SNAPSH
 
 PID=$(pgrep -f linux-thread)
 
-
-echo $(lsof -p $PID | wc -l)
+echo 'Current PID: $PID'
