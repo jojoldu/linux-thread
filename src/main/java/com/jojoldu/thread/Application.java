@@ -34,7 +34,7 @@ public class Application {
 
         System.out.println("index: " +index);
 
-        return restTemplate.getForObject("http://ec2-13-125-187-252.ap-northeast-2.compute.amazonaws.com:8080/receive-hang", String.class);
+        return restTemplate.getForObject("http://ec2-13-125-219-239.ap-northeast-2.compute.amazonaws.com:8080/receive-hang", String.class);
     }
 
     @GetMapping("/receive-hang")

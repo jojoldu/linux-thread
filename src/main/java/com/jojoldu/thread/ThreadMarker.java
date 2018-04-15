@@ -1,9 +1,7 @@
 package com.jojoldu.thread;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * Created by jojoldu@gmail.com on 2018. 4. 13.
@@ -23,11 +21,6 @@ public class ThreadMarker {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
-
-    @Async
-    public void connectHang(int i) {
-
     }
 
 }

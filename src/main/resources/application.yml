@@ -1,5 +1,5 @@
 
 server:
   tomcat:
-    max-threads: 1100
+    max-threads: 100
     max-connections: 1100

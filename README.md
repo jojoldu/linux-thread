@@ -32,6 +32,17 @@ NIO를 사용하면 각 스레드는 원하는 수만큼의 연결을 처리 할
 "keepAlive"매개 변수를 조정하여 연결을 오래 유지하면 모든 작업의 속도가 빨라집니다.
 
 
+![server-memory](./images/server-memory.png)
+
+단순 쓰레드 생성과 달리, 
+EC2의 서버 메모리가 먼저 부족해져서 EC2 사양을 높여서 다시 실험해보겠습니다.  
+
+![ec2-list](./images/ec2-list.png)
+
+t2.micro는 메모리가 1GB인지라, t2.large로 변경합니다.  
+  
+
+
 ## 설정법
 
 리눅스 서버에서 ```/etc/security/limits.conf``` 파일을 열어 수정합니다.
