@@ -3,12 +3,14 @@ package com.jojoldu.thread;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @EnableAsync
 @RestController
@@ -34,11 +36,12 @@ public class Application {
 
         System.out.println("index: " +index);
 
-        return restTemplate.getForObject("http://ec2-13-125-219-239.ap-northeast-2.compute.amazonaws.com:8080/receive-hang", String.class);
+        return restTemplate.getForObject("http://ec2-13-125-219-239.ap-northeast-2.compute.amazonaws.com:8080/receive-hang?index="+index, String.class);
     }
 
     @GetMapping("/receive-hang")
-    public String receiveHang() throws InterruptedException {
+    public String receiveHang(@RequestParam(value = "index") String index) throws InterruptedException {
+        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"))+" index: "+index);
         Thread.sleep(12000000); // 1200초 == 20분
 
         return "receiveHang";

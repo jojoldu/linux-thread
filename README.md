@@ -42,6 +42,17 @@ EC2의 서버 메모리가 먼저 부족해져서 EC2 사양을 높여서 다시
 t2.micro는 메모리가 1GB인지라, t2.large로 변경합니다.  
   
 
+전체 오픈 파일 개수
+
+```bash
+echo "OS Total Open File & Socket Count - `lsof | wc -l `"
+```
+
+root 사용자 제외한 오픈 파일 개수
+
+```bash
+lsof | awk '$3 !~ /root/ {print $0}' | wc -l
+```
 
 ## 설정법
 
