@@ -168,6 +168,35 @@ PID를 찾고,
 실제로 ```ulimit -a```로 확인할 수 있는 soft 값으로 소켓 생성이 제한되지는 않는다는 것을 알 수 있습니다.  
 결국 **소켓 생성 제한은 hard 옵션에 따라간다** 라는 이야기가 됩니다. 
 
+....
+
+### 추가
+
+![python1](./images/python1.png)
+
+> 여기서 3개를 빼야하는 이유는 stdin, stdout, stderr의 표준 입/출력이 포함됐기 때문입니다.
+
+![python2](./images/python2.png)
+
+![python3](./images/python3.png)
+
+JVM 로그를 확인해보니!
+
+![python4](./images/python4.png)
+
+이렇게 ```setlimit```으로 limit 제한을 올리는 로그가 찍혀있습니다!
+
+![python5](./images/python5.png)
+
+![python6](./images/python6.png)
+
+![python7](./images/python7.png)
+
+
+[오라클 Java 옵션](http://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.html)
+
+[Linux Code](https://github.com/dmlloyd/openjdk/blob/c3f27ada97987466e9c6e33e02e676bd69b78664/src/hotspot/os/linux/os_linux.cpp#L4998)
+
 > 참고로 Tomcat은 8 버전부터 기본 Connector 방식을 NIO로 사용합니다.  
 (7 버전까지는 BIO)  
 그러다보니 maxConnections은 10,000, maxThreads는 200이 기본값입니다.  
