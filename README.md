@@ -1,7 +1,7 @@
 # open files, max user processes
 
-Linux에서 open files, max user processes 설정에 대해 아는게 없어 정리하게 되었습니다!  
-팀에서 작업하던 중, 쓰레드와 관련해서 문제가 발생했습니다.  
+Linux에서 open files, max user processes 설정에 대해 아는게 없어 정리하게 되었습니다.  
+팀에서 서버 작업하던 중, 쓰레드와 관련해서 문제가 발생했습니다.  
 제가 진행하던 일이 아니라서 옆에서 해결하는 과정을 지켜봤었는데요.  
 부끄럽게도 **전혀 모르는 내용이 오고가서 복기 차원에서 공부하고 기록**합니다.  
   
@@ -52,9 +52,11 @@ t2.micro는 기본 설정이 ```open files```가 1024, ```max user processes```�
 
 ![thread1](./images/thread1.png)
 
-사진속을 보시면 3855개에서 ```unable to create new native thread``` 에러 메세지가 발생했습니다.  
-톰캣에서 **쓰레드 생성시 open file 개수(1024개)을 초과해서 생성**된 것입니다.  
-[Linux에서 쓰레드는 본질적으로 Linux의 공유 주소 공간을 가진 프로세스라는 답변](https://stackoverflow.com/a/344292)대로 **max user processes만큼만 쓰레드가 생성**된것을 확인할 수 있습니다.
+사진속을 보시면 3855번째에서 ```unable to create new native thread``` 에러 메세지가 발생했습니다.  
+즉, open file 제한인 1024개를 초과해서 쓰레드가 생성된 것입니다!  
+**max user processes만큼만 쓰레드가 생성**된것을 확인할 수 있습니다.
+
+> [Linux에서는 프로세스와 쓰레드를 동일하게 봅니다](https://stackoverflow.com/a/344292).
 
 ## 2. Open files
 
@@ -165,37 +167,66 @@ PID를 찾고,
 
 예상대로 4000개가 넘는 API 요청 (4635)이 가능해졌습니다!
 
-실제로 ```ulimit -a```로 확인할 수 있는 soft 값으로 소켓 생성이 제한되지는 않는다는 것을 알 수 있습니다.  
-결국 **소켓 생성 제한은 hard 옵션에 따라간다** 라는 이야기가 됩니다. 
+실제로 ```ulimit -a```로 확인할 수 있는 **soft 값으로 소켓 생성이 제한되지는 않는다**는 것을 알 수 있습니다.  
+결국 **소켓 생성 제한은 hard 옵션에 따라간다** 라는 이야기가 됩니다....  
 
-....
+![python0](./images/python0.png)
+
+이 글을 마무리하려던중, 깜짝 놀랄 이야기를 들었습니다.  
+
+> 파이썬은 안그러는데요?
 
 ### 추가
+
+깜짝 놀래서 제보를 해주신 배민찬의 모 선임님과 함께 확인을 해봤습니다.  
+soft limit으로 1024, hard limit으로 4096인걸 확인하고,  
+파이썬 스크립트로 file을 임의로 열어봅니다.
 
 ![python1](./images/python1.png)
 
 > 여기서 3개를 빼야하는 이유는 stdin, stdout, stderr의 표준 입/출력이 포함됐기 때문입니다.
 
+1021개에서 1개를 더 추가하니 바로 ```Too many open files``` Error가 발생합니다!  
+헉? soft 옵션이 파이썬에서 잘 적용된걸까요?  
+  
+진짜 그런지 한번 더 확인해봅니다.  
+open files soft 값을 2000으로 증가시킨후 다시 1997개가 넘는 file을 open 해봅니다.
+
 ![python2](./images/python2.png)
 
-![python3](./images/python3.png)
+여기서도 마찬가지로 1997개 이상 file open시에 바로 ```Too many open files``` Error가 발생합니다.  
+  
+**왜 파이썬은 soft옵션까지만 file이 오픈되고, Java에선 hard 옵션까지 file이 오픈되는건지** 이상했습니다.  
 
-JVM 로그를 확인해보니!
+이상하단 생각에 ```strace```로 JVM 로그를 확인해보니!
 
 ![python4](./images/python4.png)
 
-이렇게 ```setlimit```으로 limit 제한을 올리는 로그가 찍혀있습니다!
+이렇게 ```setlimit```으로 limit을 업데이트하는 로그가 찍혀있습니다!  
+  
+왜 이런 로그가 발생했는지 [오라클 Java 옵션](http://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.html)을 찾아봤습니다.  
+문서에는 ```MaxFDLimit``` 라는 옵션이 있었는데요, 뭔가 file limit과 관련돼 보입니다. 
 
 ![python5](./images/python5.png)
 
+이 옵션이 뭔지 찾아보니 [openjdk](https://github.com/dmlloyd/openjdk/blob/c3f27ada97987466e9c6e33e02e676bd69b78664/src/hotspot/os/linux/os_linux.cpp#L4998) 코드에서 **이 옵션이 true일 경우 ```setlimit``` 으로 limit을 증가**시키는 것을 확인할 수 있습니다.
+
 ![python6](./images/python6.png)
+
+그리고 Java설치시 ```MaxFDLimit``` 옵션은 **기본값이 true**임을 확인할 수 있습니다.
 
 ![python7](./images/python7.png)
 
+즉, **리눅스 OS에서 JDK 실행시 자동으로 limit 사이즈를 증가**시켜준다는 것을 알 수 있습니다.  
 
-[오라클 Java 옵션](http://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.html)
+## 결론
 
-[Linux Code](https://github.com/dmlloyd/openjdk/blob/c3f27ada97987466e9c6e33e02e676bd69b78664/src/hotspot/os/linux/os_linux.cpp#L4998)
+위 2개의 실험으로 얻은 결론입니다.
+
+* Java에서 동시에 생성 가능한 쓰레드 수는 ```max user processes```를 따라간다.
+* Java에서 소켓 통신(HTTP API, JDBC 커넥션 등)은  ```open file``` 옵션을 따라간다.
+  * 단, JDK 내부 코드상에서 hard limit이 soft limit에 적용된다.
+
 
 > 참고로 Tomcat은 8 버전부터 기본 Connector 방식을 NIO로 사용합니다.  
 (7 버전까지는 BIO)  
@@ -203,10 +234,10 @@ JVM 로그를 확인해보니!
 (BIO에서는 둘의 값이 동일해야 합니다)  
 이번 테스트에서 사용되는 connection 수가 1만을 넘지 않기 때문에 기본옵션으로 진행했습니다.
 
+## 번외) limit 옵션 설정방법
 
-
-## 설정법
-
+보통 soft limit과 hard limit을 별도로 관리하진 않습니다.  
+둘의 값을 동일하게 적용하는데요.  
 서버의 open files, max user processes등 옵션을 permanent (영구) 적용하기 위해선 ```/etc/security/limits.conf``` 을 수정하면 됩니다.
 
 ![ulimit-ah07](./images/ulimit-ah07.png)
