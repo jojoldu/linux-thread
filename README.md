@@ -83,6 +83,8 @@ API 요청을 받아, 20분간 대기시켜줄 서버로 ec2를 한대 더 생�
 
 ![hang1](./images/hang1.png)
 
+* RestTemplate 타임아웃이 먼저 나면 안되기 때문에 타임아웃을 30분으로 지정합니다.
+
 **요청을 받을 메소드**
 
 ![hang2](./images/hang2.png)
