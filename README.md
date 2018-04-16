@@ -215,7 +215,7 @@ open files soft 값을 2000으로 증가시킨후 다시 1997개가 넘는 file�
 
 ![python6](./images/python6.png)
 
-그리고 Java설치시 ```MaxFDLimit``` 옵션은 **기본값이 true**임을 확인할 수 있습니다.
+그리고 설치된 Java의 ```MaxFDLimit``` **기본값이 true**임을 확인할 수 있습니다.
 
 ![python7](./images/python7.png)
 
