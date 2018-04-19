@@ -208,7 +208,7 @@ open files soft 값을 2000으로 증가시킨후 다시 1997개가 넘는 file�
 
 ![python4](./images/python4.png)
 
-이렇게 ```setlimit```으로 limit을 업데이트하는 로그가 찍혀있습니다!  
+이렇게 ```setrlimit```으로 limit을 업데이트하는 로그가 찍혀있습니다!  
   
 왜 이런 로그가 발생했는지 [오라클 Java 옵션](http://www.oracle.com/technetwork/articles/java/vmoptions-jsp-140102.html)을 찾아봤습니다.  
 문서에는 ```MaxFDLimit``` 라는 옵션이 있었는데요, 뭔가 file limit과 관련돼 보입니다. 
