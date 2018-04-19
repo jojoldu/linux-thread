@@ -1,5 +1,7 @@
 # open files, max user processes
 
+> [회사 블로그](http://woowabros.github.io/experience/2018/04/17/linux-maxuserprocess-openfiles.html)에 올린글을 정리차 개인 블로그에도 정리합니다.
+
 Linux에서 open files, max user processes 설정에 대해 아는게 없어 정리하게 되었습니다.  
 팀에서 서버 작업하던 중, 쓰레드와 관련해서 문제가 발생했습니다.  
 제가 진행하던 일이 아니라서 옆에서 해결하는 과정을 지켜봤었는데요.  
@@ -10,7 +12,6 @@ Linux에서 open files, max user processes 설정에 대해 아는게 없어 정
   
 본문의 모든 내용은 테스트를 위해 임의로 생성한 코드들입니다.  
 모든 코드는 [Github](https://github.com/jojoldu/linux-thread)에 있으니 필요하시면 언제든지 사용하셔도 됩니다.  
-
 
 ## 1. Max user processes
 
